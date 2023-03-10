@@ -5,6 +5,10 @@
 .dark-nav{
     background-color: brown;
 }
+.margin{
+    margin-left: 10%;
+    margin-right: 10%;
+}
 #container {
     position: relative;
 }
