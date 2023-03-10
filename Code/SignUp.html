@@ -4,7 +4,13 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!--Javascript code for loading in the footer.html page. This code is at the top of every single standard page-->
+    <script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+    <!--Javascript code for loading in the NavBar.html page. This code is at the top of every single standard page-->
+   <script>
+        $(function() {
+        $("#IncludeNavBar").load("NavBar.html");
+        });
+    </script>
     <script>
     $(function() {
         $("#IncludeFooter").load("Footer.html");
@@ -17,6 +23,7 @@
     <title>Sign-Up Page</title>
 </head>
 <body>
+    <div id="IncludeNavBar"></div>
     <h1>Register</h1>
     <form>
         <!--Name Input-->
@@ -58,6 +65,6 @@
         <button type="submit" class="btn btn-primary">Submit</button>
     </form>
     <p>Already have an account? <a href="">Sign-in</a></p>
-    
+    <div id="IncludeFooter"></div>
 </body>
 </html>
