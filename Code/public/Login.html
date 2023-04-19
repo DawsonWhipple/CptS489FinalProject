@@ -21,6 +21,43 @@
         <!--Following link is used for CSS in index.css-->
         <link rel="stylesheet" type="text/css"href="Styles/index.css">
     <title>Login</title>
+    <script>
+        $(document).ready(function () {
+            // Add event listener to the form submit button
+            $("form").submit(function (event) {
+                event.preventDefault(); // Prevent form submission
+                // Get form input values
+                var username = $("#loginUsername").val();
+                var password = $("#loginPassword").val();
+
+                // Validation checks
+                if (username === "" || password === "") {
+                    alert("Please fill in all fields.");
+                    return;
+                }
+                // Save user information using AJAX call
+                $.ajax({
+                    type: "POST",
+                    url: "/login", // Update with the correct endpoint of your Express route
+                    data: {
+                        loginUsername: username,
+                        loginPassword: password
+                    },
+                    success: function (response) {
+                        // Reset form inputs
+                        $("form")[0].reset();
+                        $("form").trigger("reset");
+
+                        // Redirect to desired page
+                        window.location.href = "/index";
+                    },
+                    error: function (error) {
+                        alert(error.responseText)
+                    }
+                });
+            });
+        });
+    </script>
 </head>
 <body>
     <div id="IncludeNavBar"></div>
@@ -37,8 +74,9 @@
             <input type="password" class="form-control" id="loginPassword" placeholder="Enter password">
             <label for="floatingPassword">Password</label>
         </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
     </form>
-    <p>Need to create an account? <a href="">Sign-up</a></p>
+    <p>Need to create an account? <a href="SignUp.html">Sign-up</a></p>
     <div id="IncludeFooter"></div>
 </body>
 </html>
