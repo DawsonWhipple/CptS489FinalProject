@@ -15,7 +15,6 @@ app.engine('html', require('ejs').renderFile);
 
 // Generate a random secret string
 const secret = crypto.randomBytes(64).toString('hex');
-console.log('Secret:', secret);
 
 // Set up body-parser middleware to parse request bodies
 app.use(bodyParser.urlencoded({ extended: true }));
