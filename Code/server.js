@@ -72,7 +72,7 @@ app.post('/login', (req, res) => {
 
   if (matchedUser) {
     // Login successful
-    req.session.username = loginUsername;
+    req.session.username = matchedUser.username;
 
     res.send("logn successful");
   } else {
