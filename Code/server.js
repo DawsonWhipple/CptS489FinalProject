@@ -9,9 +9,8 @@ const path = require('path'); // Import path module
 // Initialise Express
 var app = express();
 // Render static files
-app.use(express.static('public'));
-app.set('view engine', 'html');
-app.engine('html', require('ejs').renderFile);
+app.set('view engine', 'ejs');
+app.use(express.static('views'));
 
 // Generate a random secret string
 const secret = crypto.randomBytes(64).toString('hex');
@@ -63,8 +62,15 @@ app.post('/signup', (req, res) => {
 app.post('/login', (req, res) => {
   const { loginUsername, loginPassword } = req.body; // Get login information from request body
 
+  console.log({ loginUsername, loginPassword });
+
+  // Delete the users module from the cache
+  delete require.cache[require.resolve('./users.json')];
+
   // Load JSON data from file
   const users = require('./users.json');
+
+  console.log(users);
 
   // Check if login information matches a record in the JSON data
   const matchedUser = users.find(user => (user.username === loginUsername || user.email === loginUsername) && user.password === loginPassword);
@@ -73,18 +79,48 @@ app.post('/login', (req, res) => {
     // Login successful
     req.session.username = matchedUser.username;
 
-    res.send("logn successful");
+    res.send("login successful");
   } else {
     // Login failed
     res.status(401).send('Invalid username or password.');
   }
 });
 
-app.get('/index', (req, res) => {
+app.get('/', (req, res) => {
   // Access username from session
   const username = req.session.username;
   // Render home page with username
-  res.render(path.join(__dirname+'/public/index.html'), { username: username });
+  res.render('index.ejs', { username: username });
+});
+
+app.get('/Trending', (req, res) => {
+  // Render home page with username
+  res.render('Trending.ejs');
+});
+
+app.get('/Challenges', (req, res) => {
+  // Render home page with username
+  res.render('Challenges.ejs');
+});
+
+app.get('/Friends', (req, res) => {
+  // Render home page with username
+  res.render('Friends.ejs');
+});
+
+app.get('/Profile', (req, res) => {
+  // Render home page with username
+  res.render('Profile.ejs');
+});
+
+app.get('/SignUp', (req, res) => {
+  // Render home page with username
+  res.render('SignUp.ejs');
+});
+
+app.get('/Login', (req, res) => {
+  // Render home page with username
+  res.render('Login.ejs');
 });
 
 // Port website will run on
