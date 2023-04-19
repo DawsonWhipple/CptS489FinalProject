@@ -86,6 +86,11 @@ app.post('/login', (req, res) => {
   }
 });
 
+// Navigate to create post page when create button clicked
+app.post('/goToCreatePost', (req, res) => {
+  res.render('CreatePost.ejs');
+});
+
 app.get('/', (req, res) => {
   // Access username from session
   const username = req.session.username;
@@ -122,6 +127,7 @@ app.get('/Login', (req, res) => {
   // Render home page with username
   res.render('Login.ejs');
 });
+
 
 // Port website will run on
 app.listen(3000,() => {
