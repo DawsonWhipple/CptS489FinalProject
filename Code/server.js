@@ -91,6 +91,25 @@ app.post('/goToCreatePost', (req, res) => {
   res.render('CreatePost.ejs');
 });
 
+app.post('/createPost', (req, res) => {
+  let posts = []
+  const exercise = req.body.exercise;
+
+  const readDataPosts = fs.readFileSync('posts.json');
+
+  if(readDataPosts && readDataPosts.length > 0){
+    posts = JSON.parse(readDataPosts);
+  }
+
+  const newPost = { exercise };
+  posts.push(newPost);
+
+  // Write to the JSON file
+  fs.writeFileSync('posts.json', JSON.stringify(posts));
+
+  res.redirect('/');
+});
+
 app.get('/', (req, res) => {
   // Access username from session
   const username = req.session.username;
