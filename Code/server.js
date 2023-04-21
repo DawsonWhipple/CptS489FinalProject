@@ -118,32 +118,53 @@ app.post('/createPost', (req, res) => {
 app.get('/', (req, res) => {
   // Access username from session
   const username = req.session.username;
-
+  
+  if(username == undefined){
+    res.redirect('/login');
+    }
+  else{
   // Load JSON data from file
   const postList = require('./posts.json');
 
   // Render home page with username
   res.render('index.ejs', { username: username, posts: postList});
+  }
 });
 
 app.get('/Trending', (req, res) => {
-  // Render home page with username
+  if(req.session.username == undefined){
+    res.redirect('/login')
+  }
+  else{
   res.render('Trending.ejs');
+  }
 });
 
 app.get('/Challenges', (req, res) => {
-  // Render home page with username
+  if(req.session.username == undefined){
+    res.redirect('/login')
+  }
+  else{
   res.render('Challenges.ejs');
+  }
 });
 
 app.get('/Friends', (req, res) => {
-  // Render home page with username
+  if(req.session.username == undefined){
+    res.redirect('/login')
+  }
+  else{
   res.render('Friends.ejs');
+  }
 });
 
 app.get('/Profile', (req, res) => {
-  // Render home page with username
+  if(req.session.username == undefined){
+    res.redirect('/login')
+  }
+  else{
   res.render('Profile.ejs');
+  }
 });
 
 app.get('/SignUp', (req, res) => {
