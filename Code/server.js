@@ -104,7 +104,7 @@ app.post('/createPost', (req, res) => {
   }
 
   const newPost = { exercise, description, username };
-  posts.push(newPost);
+  posts.unshift(newPost);
 
   // Write to the JSON file
   fs.writeFileSync('posts.json', JSON.stringify(posts));
