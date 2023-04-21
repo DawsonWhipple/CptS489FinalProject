@@ -94,6 +94,8 @@ app.post('/goToCreatePost', (req, res) => {
 app.post('/createPost', (req, res) => {
   let posts = []
   const exercise = req.body.exercise;
+  const description = req.body.description;
+  const username = req.session.username;
 
   const readDataPosts = fs.readFileSync('posts.json');
 
@@ -101,11 +103,14 @@ app.post('/createPost', (req, res) => {
     posts = JSON.parse(readDataPosts);
   }
 
-  const newPost = { exercise };
+  const newPost = { exercise, description, username };
   posts.push(newPost);
 
   // Write to the JSON file
   fs.writeFileSync('posts.json', JSON.stringify(posts));
+
+  // Delete the posts module from the cache
+  delete require.cache[require.resolve('./posts.json')];
 
   res.redirect('/');
 });
@@ -113,8 +118,12 @@ app.post('/createPost', (req, res) => {
 app.get('/', (req, res) => {
   // Access username from session
   const username = req.session.username;
+
+  // Load JSON data from file
+  const postList = require('./posts.json');
+
   // Render home page with username
-  res.render('index.ejs', { username: username });
+  res.render('index.ejs', { username: username, posts: postList});
 });
 
 app.get('/Trending', (req, res) => {
