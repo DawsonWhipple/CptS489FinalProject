@@ -91,7 +91,12 @@ app.post('/login', (req, res) => {
         res.send("Login successful");
       } else {
         // Login failed
-        res.status(401).send('Invalid username or password.');
+        if(matchedUser){
+          res.status(401).send('Invalid password.');
+        }
+        else{
+        res.status(401).send('username does not exist');
+        }
       }
     })
     .catch((err) => {
