@@ -25,8 +25,10 @@ app.use(session({
   cookie: { secure: false } // set to true if using HTTPS
 }));
 
+const conn = "mongodb+srv://tomarad2001:2zTtcOVjDS7qOGI3@app.n3x0e0i.mongodb.net/?retryWrites=true&w=majority"
+
 // Connect to MongoDB
-mongoose.connect('mongodb://0.0.0.0:27017/myapp', { useNewUrlParser: true, useUnifiedTopology: true })
+mongoose.connect(conn, { useNewUrlParser: true, useUnifiedTopology: true })
 .then(() => {
   console.log('Connected to MongoDB');
 })
