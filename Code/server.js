@@ -5,6 +5,7 @@ const bodyParser = require('body-parser');
 const session = require('express-session');
 const crypto = require('crypto');
 const path = require('path'); // Import path module
+const mongoose = require('mongoose'); // Import mongoose for MongoDB
 
 // Initialise Express
 var app = express();
@@ -24,6 +25,25 @@ app.use(session({
   cookie: { secure: false } // set to true if using HTTPS
 }));
 
+// Connect to MongoDB
+mongoose.connect('mongodb://0.0.0.0:27017/myapp', { useNewUrlParser: true, useUnifiedTopology: true })
+.then(() => {
+  console.log('Connected to MongoDB');
+})
+.catch((err) => {
+  console.error('Failed to connect to MongoDB:', err);
+});
+
+// Define schema for users
+const userSchema = new mongoose.Schema({
+  username: String,
+  email: String,
+  password: String
+});
+
+// Create user model
+const User = mongoose.model('User', userSchema);
+
 // Route for handling form submissions from the signup page
 app.post('/signup', (req, res) => {
   // Retrieve user data from the request body
@@ -32,58 +52,50 @@ app.post('/signup', (req, res) => {
   const password = req.body.registerPassword;
   let users = [];
 
-  // Read from the JSON file
-  const readData = fs.readFileSync('users.json');
-  if(readData && readData.length > 0){
-    users = JSON.parse(readData);
-  }
-
-  const existingUsername = users.find(user => user.username === username);
-  const existingEmail = users.find(user => user.email === email);
-  if (existingUsername) {
-    // Send error response if username or email already exist
-    res.status(404).send('Username already exists');
-  }
-  else if(existingEmail){
-    res.status(404).send('Email already exists');
-  }
-  else{
-  // Add the new user to the array
-  res.send("success");
-  const newUser = { username, email, password };
-  users.push(newUser);
-
-  // Write to the JSON file
-  fs.writeFileSync('users.json', JSON.stringify(users));
-  }
+  User.findOne({ $or: [{ username: username }, { email: email }] })
+    .then((existingUser) => {
+      if (existingUser) {
+        // Send error response if username or email already exist
+        res.status(404).send('Username or email already exists');
+      } else {
+        // Add the new user to the database
+        const newUser = new User({ username, email, password });
+        newUser.save()
+          .then(() => {
+            res.send("success");
+          })
+          .catch((err) => {
+            console.error('Failed to save user:', err);
+            res.status(500).send('Failed to save user');
+          });
+      }
+    })
+    .catch((err) => {
+      console.error('Failed to find user:', err);
+      res.status(500).send('Failed to find user');
+    });
 });
 
 // Endpoint to handle login requests
 app.post('/login', (req, res) => {
   const { loginUsername, loginPassword } = req.body; // Get login information from request body
 
-  console.log({ loginUsername, loginPassword });
-
-  // Delete the users module from the cache
-  delete require.cache[require.resolve('./users.json')];
-
-  // Load JSON data from file
-  const users = require('./users.json');
-
-  console.log(users);
-
-  // Check if login information matches a record in the JSON data
-  const matchedUser = users.find(user => (user.username === loginUsername || user.email === loginUsername) && user.password === loginPassword);
-
-  if (matchedUser) {
-    // Login successful
-    req.session.username = matchedUser.username;
-
-    res.send("login successful");
-  } else {
-    // Login failed
-    res.status(401).send('Invalid username or password.');
-  }
+  // Find user in MongoDB based on the provided username or email
+  User.findOne({ $or: [{ username: loginUsername }, { email: loginUsername }] })
+    .then((matchedUser) => {
+      if (matchedUser && matchedUser.password === loginPassword) {
+        // Login successful
+        req.session.username = matchedUser.username;
+        res.send("Login successful");
+      } else {
+        // Login failed
+        res.status(401).send('Invalid username or password.');
+      }
+    })
+    .catch((err) => {
+      console.error('Failed to find user:', err);
+      res.status(500).send('Failed to find user');
+    });
 });
 
 // Navigate to create post page when create button clicked
