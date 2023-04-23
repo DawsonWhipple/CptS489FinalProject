@@ -316,7 +316,7 @@ app.get('/Login', (req, res) => {
   res.render('Login.ejs');
 });
 
-app.get('/EditProfilePage', (req, res) => {
+app.post('/EditProfilePage', (req, res) => {
   username = req.session.username;
   if(req.session.username == undefined){
     res.redirect('/login')
