@@ -227,13 +227,14 @@ app.post('/editProfile', (req, res) => {
     })
     .then((updatedUser) => {
       console.log('Updated user information:', updatedUser);
-      res.redirect('/');
+      res.redirect('/Profile');
     })
     .catch((err) => {
       console.error('Failed to edit profile:', err);
       res.status(500).send('Failed to edit profile');
     });
 });
+
 
 app.get('/', (req, res) => {
   // Access username from session
@@ -290,21 +291,29 @@ app.get('/Friends', (req, res) => {
 });
 
 app.get('/Profile', (req, res) => {
-  username = req.session.username;
-  if(req.session.username == undefined){
-    res.redirect('/login')
-  }
-  else{
+  const username = req.session.username;
+  if (req.session.username == undefined) {
+    res.redirect('/login');
+  } else {
     User.findOne({ username: req.session.username })
-    .then((user) => {
-      res.render('Profile.ejs', { user: user });
-    })
-    .catch((err) => {
-      console.error('Failed to find user:', err);
-      res.status(500).send('Failed to find user');
-    });
+      .then((user) => {
+        Post.find({ username: username })
+          .sort({ likes: -1, _id: -1 })
+          .then((posts) => {
+            res.render('Profile.ejs', { user: user, posts: posts, username: username });
+          })
+          .catch((err) => {
+            console.error('Failed to retrieve posts:', err);
+            res.status(500).send('Failed to retrieve posts');
+          });
+      })
+      .catch((err) => {
+        console.error('Failed to find user:', err);
+        res.status(500).send('Failed to find user');
+      });
   }
 });
+
 
 app.get('/SignUp', (req, res) => {
   // Render home page with username
