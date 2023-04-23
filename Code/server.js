@@ -6,6 +6,7 @@ const session = require('express-session');
 const crypto = require('crypto');
 const path = require('path'); // Import path module
 const mongoose = require('mongoose'); // Import mongoose for MongoDB
+const uuid = require('uuid');
 
 // Initialise Express
 var app = express();
@@ -50,7 +51,8 @@ const User = mongoose.model('User', userSchema);
 const postSchema = new mongoose.Schema({
   exercise: String,
   description: String,
-  username: String
+  username: String,
+  likes: Number
 });
 
 // Create post model
@@ -63,7 +65,6 @@ app.post('/signup', (req, res) => {
   const username = req.body.registerUsername;
   const email = req.body.registerEmail;
   const password = req.body.registerPassword;
-  let users = [];
 
   User.findOne({ $or: [{ username: username }, { email: email }] })
     .then((existingUser) => {
@@ -124,14 +125,17 @@ app.post('/goToCreatePost', (req, res) => {
 app.post('/createPost', (req, res) => {
   const exercise = req.body.exercise;
   const description = req.body.description;
-  const username = req.session.username;
+  const username = req.session.username;;
+  const likes = 0;
+  const postId = req.session._id
 
   // Check if exercise and description are not empty
   if (!exercise || !description) {
     return res.send(`<script>alert('Exercise and description are required'); window.history.back();</script>`);
   }
 
-  const newPost = new Post({ exercise, description, username });
+
+  const newPost = new Post({ _id: postId, exercise, description, username, likes });
 
   newPost.save()
           .then(() => {
@@ -145,6 +149,30 @@ app.post('/createPost', (req, res) => {
 
   res.redirect('/');
 });
+
+app.post('/likePost/:id', (req, res) => {
+  const postId = req.params.id;
+
+  // Find the post in the database
+  Post.findById(postId)
+    .then((post) => {
+      if (!post) {
+        res.status(404).send('Post not found');
+      } else {
+        // Update the likes field of the post and save it to the database
+        post.likes++;
+        return post.save();
+      }
+    })
+    .then(() => {
+      res.redirect("/")
+    })
+    .catch((err) => {
+      console.error('Failed to like post:', err);
+      res.status(500).send('Failed to like post');
+    });
+});
+
 
 app.get('/', (req, res) => {
   // Access username from session
