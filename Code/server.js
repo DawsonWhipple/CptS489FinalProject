@@ -196,7 +196,17 @@ app.post('/updateProgress/:id', (req, res) => {
 
 app.post('/newProgress/:id', (req, res) => {
   const challengeid = req.params.id;
-  const newprogress = req.body.newprogress;
+  const progressNum = req.body.newprogress;
+
+  if (isNaN(progressNum)) {
+    return res.send(`<script>alert('Progress must be a valid number'); window.history.back();</script>`);
+  }
+
+  if (progressNum > 100 || progressNum < 0) {
+    return res.send(`<script>alert('Progress cannot be greater than 100% or less than 0%'); window.history.back();</script>`);
+  }
+
+  newprogress = progressNum+"%"
 
   Challenge.findById(challengeid)
     .then((challenge) => {
@@ -205,6 +215,11 @@ app.post('/newProgress/:id', (req, res) => {
       } else {
         challenge.progress = newprogress
         challenge.update = false
+        if(progressNum == 100) {
+          challenge.challengeComplete = true
+        } else {
+          challenge.challengeComplete = false
+        }
         return challenge.save();
       }
     })
