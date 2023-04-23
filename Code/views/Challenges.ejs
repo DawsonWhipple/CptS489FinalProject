@@ -25,6 +25,19 @@
 <body>
     <div id="IncludeNavBar"></div>
     <div>This is the Challenges Page</div>
+    <form action="/goToCreateChallenge" method="post">
+      <input type="submit" value="Add Challenge">
+    </form>
+    <% for (challenge of challenges) { %>
+      <p class="mb-1" style="font-size: .77rem;"><%=challenge.challengename%></p>
+      <div class="progress rounded" style="height: 5px;">
+        <div class="progress-bar" role="progressbar" style="width: <%=challenge.progress%>" aria-valuenow=80%>
+          aria-valuemin="0" aria-valuemax="100"></div>
+      </div>
+      <% if(challenge.challengeComplete) { %>
+        <p class="mb-1" style="font-size: .50rem;">Completed</p>
+      <% } %> 
+      <% } %> 
     <div id="IncludeFooter"></div>
 </body>
 </html>

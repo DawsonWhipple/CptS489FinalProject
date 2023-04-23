@@ -130,6 +130,7 @@
                         <div>
                             <div class="d-flex flex-row justify-content-between align-items-center p-2 border-bottom">
                                 <div class="d-flex flex-row align-items-center feed-text px-2"><img class="rounded-circle" src="images/FitnessUser.png" width="30">
+                                  <div class="d-flex flex-column flex-wrap ml-2"><span class="font-weight-bold"><%=post.username%></span><span class="text-black-50 time"></span></div>
                                 </div>
                                 <div class="feed-icon px-2"><i class="fa fa-ellipsis-v text-black-50"></i></div>
                             </div>
@@ -147,21 +148,16 @@
                     <div class="card-body">
                       <p class="mb-4"><span class="text-primary font-italic me-1">Current Challenges</span>
                       </p>
-                      <p class="mb-1" style="font-size: .77rem;">Ultra Marathon: Run 100 miles total this month</p>
+                      <% for (challenge of challenges) { %>
+                      <p class="mb-1" style="font-size: .77rem;"><%=challenge.challengename%></p>
                       <div class="progress rounded" style="height: 5px;">
-                        <div class="progress-bar" role="progressbar" style="width: 80%" aria-valuenow="80"
+                        <div class="progress-bar" role="progressbar" style="width: <%=challenge.progress%>" aria-valuenow=80%>
                           aria-valuemin="0" aria-valuemax="100"></div>
                       </div>
-                      <p class="mt-4 mb-1" style="font-size: .77rem;">Hydration: Drink a gallon of water every day this month</p>
-                      <div class="progress rounded" style="height: 5px;">
-                        <div class="progress-bar" role="progressbar" style="width: 72%" aria-valuenow="72"
-                          aria-valuemin="0" aria-valuemax="100"></div>
-                      </div>
-                      <p class="mt-4 mb-1" style="font-size: .77rem;">Breaking Records: Increase a PR by atleast 25%</p>
-                      <div class="progress rounded" style="height: 5px;">
-                        <div class="progress-bar" role="progressbar" style="width: 89%" aria-valuenow="89"
-                          aria-valuemin="0" aria-valuemax="100"></div>
-                      </div>
+                      <% if(challenge.challengeComplete) { %>
+                        <p class="mb-1" style="font-size: .50rem;">Completed</p>
+                      <% } %> 
+                      <% } %> 
                       </div>
                     </div>
                   </div>

@@ -68,6 +68,17 @@ const postSchema = new mongoose.Schema({
 // Create post model
 const Post = mongoose.model('Post', postSchema);
 
+// Define schema for challenges
+const challengeSchema = new mongoose.Schema({
+  challengename: String,
+  progress: String,
+  username: String,
+  challengeComplete: Boolean
+});
+
+// Create challenge model
+const Challenge = mongoose.model('Challenge', challengeSchema);
+
 
 // Route for handling form submissions from the signup page
 app.post('/signup', (req, res) => {
@@ -160,6 +171,54 @@ app.post('/createPost', (req, res) => {
 
   res.redirect('/');
 });
+
+// Navigate to create post page when create button clicked
+app.post('/goToCreateChallenge', (req, res) => {
+  res.render('CreateChallenge.ejs');
+});
+
+app.post('/createChallenge', (req, res) => {
+  const challengename = req.body.challengename
+  const username = req.session.username;
+  const progressNum = req.body.progress
+  const challengeId = req.session._id
+
+  // Check if exercise and description are not empty
+  if (!challengename) {
+    return res.send(`<script>alert('Challenge name is required'); window.history.back();</script>`);
+  }
+
+  if (isNaN(progressNum)) {
+    return res.send(`<script>alert('Progress must be a valid number'); window.history.back();</script>`);
+  }
+
+  if (progressNum > 100 || progressNum < 0) {
+    return res.send(`<script>alert('Progress cannot be greater than 100% or less than 0%'); window.history.back();</script>`);
+  }
+
+  if (progressNum == 100) {
+    challengeComplete = true
+  } else {
+    challengeComplete = false
+  }
+
+  progress = progressNum+"%"
+
+  const newChallenge = new Challenge({ _id: challengeId, challengename: challengename, username: username, progress: progress, challengeComplete: challengeComplete });
+
+  newChallenge.save()
+          .then(() => {
+            console.log("success");
+          })
+          .catch((err) => {
+            console.error('Failed to save challenge:', err);
+            //res.status(500).send('Failed to save user');
+          });
+
+
+  res.redirect('/Challenges');
+});
+
 
 app.post('/likePost/:id', (req, res) => {
   const postId = req.params.id;
@@ -273,11 +332,19 @@ app.get('/Trending', (req, res) => {
 });
 
 app.get('/Challenges', (req, res) => {
+  const username = req.session.username;
   if(req.session.username == undefined){
     res.redirect('/login')
   }
   else{
-  res.render('Challenges.ejs');
+    Challenge.find({ username: username })
+    .then((challenges) => {
+      res.render('Challenges.ejs', { challenges: challenges, username:username });
+    })
+    .catch((err) => {
+      console.error('Failed to find challenges:', err);
+      res.status(500).send('Failed to find challenges');
+    });
   }
 });
 
@@ -292,27 +359,35 @@ app.get('/Friends', (req, res) => {
 
 app.get('/Profile', (req, res) => {
   const username = req.session.username;
-  if (req.session.username == undefined) {
-    res.redirect('/login');
-  } else {
-    User.findOne({ username: req.session.username })
-      .then((user) => {
-        Post.find({ username: username })
-          .sort({ likes: -1, _id: -1 })
-          .then((posts) => {
-            res.render('Profile.ejs', { user: user, posts: posts, username: username });
-          })
-          .catch((err) => {
-            console.error('Failed to retrieve posts:', err);
-            res.status(500).send('Failed to retrieve posts');
-          });
-      })
-      .catch((err) => {
-        console.error('Failed to find user:', err);
-        res.status(500).send('Failed to find user');
-      });
-  }
+
+  User.findOne({ username: username })
+    .then((user) => {
+      if (!user) {
+        return res.status(404).send('User not found');
+      }
+
+      Post.find({ username: username })
+        .then((posts) => {
+          Challenge.find({ username: username })
+            .then((challenges) => {
+              res.render('Profile', { user: user, posts: posts, challenges: challenges, username:username });
+            })
+            .catch((err) => {
+              console.error('Failed to find challenges:', err);
+              res.status(500).send('Failed to find challenges');
+            });
+        })
+        .catch((err) => {
+          console.error('Failed to find posts:', err);
+          res.status(500).send('Failed to find posts');
+        });
+    })
+    .catch((err) => {
+      console.error('Failed to find user:', err);
+      res.status(500).send('Failed to find user');
+    });
 });
+
 
 
 app.get('/SignUp', (req, res) => {
