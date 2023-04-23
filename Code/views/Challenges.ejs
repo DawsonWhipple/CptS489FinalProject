@@ -29,14 +29,22 @@
       <input type="submit" value="Add Challenge">
     </form>
     <% for (challenge of challenges) { %>
-      <p class="mb-1" style="font-size: .77rem;"><%=challenge.challengename%></p>
-      <div class="progress rounded" style="height: 5px;">
-        <div class="progress-bar" role="progressbar" style="width: <%=challenge.progress%>" aria-valuenow=80%>
-          aria-valuemin="0" aria-valuemax="100"></div>
-      </div>
-      <% if(challenge.challengeComplete) { %>
-        <p class="mb-1" style="font-size: .50rem;">Completed</p>
-      <% } %> 
+         <form action="/updateProgress/<%= challenge.id %>" method="post">
+         <p class="mb-1" style="font-size: .77rem;"><%=challenge.challengename%></p>
+         <div class="progress rounded" style="height: 5px;">
+         <button type="submit" class="progress-bar" role="progressbar" style="width: <%=challenge.progress%>" aria-valuenow=80% aria-valuemin="0" aria-valuemax="100"></button>
+         </div>
+         <% if(challenge.challengeComplete) { %>
+         <p class="mb-1" style="font-size: .50rem;">Completed</p>
+         <% } %>
+      </form>
+      <% if(challenge.update) { %>
+         <form action="/newProgress/<%= challenge.id %>" method="post">
+            <label for="description">Progress %: </label>
+            <input type="text" id="newprogress" name="newprogress">
+            <input type="submit" value="submit">
+         </form>
+         <% } %> 
       <% } %> 
     <div id="IncludeFooter"></div>
 </body>

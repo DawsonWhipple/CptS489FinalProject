@@ -73,7 +73,8 @@ const challengeSchema = new mongoose.Schema({
   challengename: String,
   progress: String,
   username: String,
-  challengeComplete: Boolean
+  challengeComplete: Boolean, 
+  update: Boolean
 });
 
 // Create challenge model
@@ -172,16 +173,56 @@ app.post('/createPost', (req, res) => {
   res.redirect('/');
 });
 
-// Navigate to create post page when create button clicked
-app.post('/goToCreateChallenge', (req, res) => {
-  res.render('CreateChallenge.ejs');
+app.post('/updateProgress/:id', (req, res) => {
+  const challengeid = req.params.id;
+
+  Challenge.findById(challengeid)
+    .then((challenge) => {
+      if (!challenge) {
+        res.status(404).send('Challenge not found');
+      } else {
+        challenge.update = true
+        return challenge.save();
+      }
+    })
+    .then(() => {
+      res.redirect("/Challenges")
+    })
+    .catch((err) => {
+      console.error('Failed to update progress:', err);
+      res.status(500).send('Failed to update progress');
+    });
+});
+
+app.post('/newProgress/:id', (req, res) => {
+  const challengeid = req.params.id;
+  const newprogress = req.body.newprogress;
+
+  Challenge.findById(challengeid)
+    .then((challenge) => {
+      if (!challenge) {
+        res.status(404).send('Challenge not found');
+      } else {
+        challenge.progress = newprogress
+        challenge.update = false
+        return challenge.save();
+      }
+    })
+    .then(() => {
+      res.redirect("/Challenges")
+    })
+    .catch((err) => {
+      console.error('Failed to update progress:', err);
+      res.status(500).send('Failed to update progress');
+    });
 });
 
 app.post('/createChallenge', (req, res) => {
   const challengename = req.body.challengename
-  const username = req.session.username;
+  const username = req.session.username
   const progressNum = req.body.progress
   const challengeId = req.session._id
+  const update = false
 
   // Check if exercise and description are not empty
   if (!challengename) {
@@ -204,7 +245,7 @@ app.post('/createChallenge', (req, res) => {
 
   progress = progressNum+"%"
 
-  const newChallenge = new Challenge({ _id: challengeId, challengename: challengename, username: username, progress: progress, challengeComplete: challengeComplete });
+  const newChallenge = new Challenge({ _id: challengeId, challengename: challengename, username: username, progress: progress, challengeComplete: challengeComplete, update: update });
 
   newChallenge.save()
           .then(() => {
@@ -219,6 +260,9 @@ app.post('/createChallenge', (req, res) => {
   res.redirect('/Challenges');
 });
 
+app.post('/goToCreateChallenge', (req, res) => {
+  res.render('CreateChallenge.ejs');
+});
 
 app.post('/likePost/:id', (req, res) => {
   const postId = req.params.id;
