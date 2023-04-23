@@ -33,33 +33,54 @@
                 <div class="card-body text-center">
                   <img src="Images/FitnessUser.png" alt="avatar"
                     class="rounded-circle img-fluid" style="width: 150px;">
-                  <h5 class="my-3">Dawson.Whipple01</h5>
-                  <p class="text-muted mb-1">[Insert Bio Here]</p>
+                  <h5 class="my-3"><%=username%></h5>
+                  <% if(user.name) { %>
+                    <p class="text-muted mb-1">Name: <%=user.name%></p>
+                  <% } %>
+                  <% if(user.favoriteexercise) { %>
+                    <p class="text-muted mb-1">Favorite Exercise: <%=user.favoriteexcercise%></p>
+                  <% } %>
+                  <% if(user.fitnessgoal) { %>
+                    <p class="text-muted mb-1">Current Fitness Goal: <%=user.fitnessgoal%></p>
+                  <% } %>
+                  <% if(user.bio) { %>
+                    <p class="text-muted mb-1">Bio: <%=user.bio%></p>
+                  <% } %>
                 </div>
               </div>
               <div class="card mb-4 mb-lg-0">
                 <div class="card-body p-0">
                   <ul class="list-group list-group-flush rounded-3">
+                    <% if(user.facebook) { %>
                     <li class="list-group-item d-flex justify-content-between align-items-center p-3">
                         <a class="text-white" href="https://mdbootstrap.com/"><img src="Images/facebook.png" height="25"></a>
-                      <p class="mb-0">facebook.com/DawsonWhipple</p>
+                      <p class="mb-0">facebook.com/<%=user.facebook%></p>
                     </li>
+                    <% } %>
+                    <% if(user.instagram) { %>
                     <li class="list-group-item d-flex justify-content-between align-items-center p-3">
                         <a class="text-white" href="https://mdbootstrap.com/"><img src="Images/instagram.png" height="25"></a>
-                      <p class="mb-0">Instagram.com/DawsonWhipple</p>
+                      <p class="mb-0">Instagram.com/<%=user.instagram%></p>
                     </li>
+                    <% } %>
+                    <% if(user.twitter) { %>
                     <li class="list-group-item d-flex justify-content-between align-items-center p-3">
                         <a class="text-white" href="https://mdbootstrap.com/"><img src="Images/twitter.png" height="25"></a>
-                      <p class="mb-0">Twitter.com/DawsonWhipple</p>
+                      <p class="mb-0">Twitter.com/<%=user.twitter%></p>
                     </li>
+                    <% } %>
+                    <% if(user.snapchat) { %>
                     <li class="list-group-item d-flex justify-content-between align-items-center p-3">
                         <a class="text-white" href="https://mdbootstrap.com/"><img src="Images/snapchat.png" height="25"></a>
-                      <p class="mb-0">Snapchat.com/DawsonWhipple</p>
+                      <p class="mb-0">Snapchat.com/<%=user.snapchat%></p>
                     </li>
+                    <% } %>
+                    <% if(user.spotify) { %>
                     <li class="list-group-item d-flex justify-content-between align-items-center p-3">
                         <a class="text-white" href="https://mdbootstrap.com/"><img src="Images/spotify.png" height="25"></a>
-                      <p class="mb-0">Spotify.com/DawsonWhipple</p>
+                      <p class="mb-0">Spotify.com/<%=user.spotify%></p>
                     </li>
+                    <% } %>
                   </ul>
                 </div>
               </div>
@@ -72,7 +93,7 @@
                       <p class="mb-0">Name</p>
                     </div>
                     <div class="col-sm-9">
-                      <p class="text-muted mb-0">Dawson L Whipple</p>
+                      <p class="text-muted mb-0"><%=user.name%></p>
                     </div>
                   </div>
                   <hr>
@@ -81,16 +102,7 @@
                       <p class="mb-0">Email</p>
                     </div>
                     <div class="col-sm-9">
-                      <p class="text-muted mb-0">dawson.whipple@wsu.edu</p>
-                    </div>
-                  </div>
-                  <hr>
-                  <div class="row">
-                    <div class="col-sm-3">
-                      <p class="mb-0">Phone</p>
-                    </div>
-                    <div class="col-sm-9">
-                      <p class="text-muted mb-0">(123) 456-7890</p>
+                      <p class="text-muted mb-0"><%=user.displayemail%></p>
                     </div>
                   </div>
                   <hr>
@@ -99,7 +111,7 @@
                       <p class="mb-0">Location</p>
                     </div>
                     <div class="col-sm-9">
-                      <p class="text-muted mb-0">Pullman, WA</p>
+                      <p class="text-muted mb-0"><%=user.location%></p>
                     </div>
                   </div>
                 </div>

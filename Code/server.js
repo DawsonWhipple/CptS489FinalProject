@@ -40,7 +40,18 @@ mongoose.connect(conn, { useNewUrlParser: true, useUnifiedTopology: true })
 const userSchema = new mongoose.Schema({
   username: String,
   email: String,
-  password: String
+  password: String,
+  name:String, 
+  displayemail: { type: String, required: false },
+  location: { type: String, required: false },
+  fitnessgoal: { type: String, required: false },
+  favoriteexercise: { type: String, required: false },
+  bio: { type: String, required: false },
+  facebook: { type: String, required: false },
+  instagram: { type: String, required: false },
+  twitter: { type: String, required: false },
+  snapchat: { type: String, required: false },
+  spotify: { type: String, required: false }
 });
 
 // Create user model
@@ -62,6 +73,7 @@ const Post = mongoose.model('Post', postSchema);
 app.post('/signup', (req, res) => {
   // Retrieve user data from the request body
   const username = req.body.registerUsername;
+  const name = req.body.name;
   const email = req.body.registerEmail;
   const password = req.body.registerPassword;
 
@@ -72,7 +84,7 @@ app.post('/signup', (req, res) => {
         res.status(404).send('Username or email already exists');
       } else {
         // Add the new user to the database
-        const newUser = new User({ username, email, password });
+        const newUser = new User({ username: username, name: name, email: email, password: password });
         newUser.save()
           .then(() => {
             res.send("success");
@@ -124,7 +136,7 @@ app.post('/goToCreatePost', (req, res) => {
 app.post('/createPost', (req, res) => {
   const exercise = req.body.exercise;
   const description = req.body.description;
-  const username = req.session.username;;
+  const username = req.session.username;
   const likes = 0;
   const postId = req.session._id
 
@@ -172,6 +184,56 @@ app.post('/likePost/:id', (req, res) => {
     });
 });
 
+app.post('/editProfile', (req, res) => {
+  const username = req.session.username;
+  const newname = req.body.newname;
+  const displayemail = req.body.displayemail;
+  const location = req.body.location;
+  const fitnessgoal = req.body.fitnessgoal;
+  const favoriteexercise = req.body.favoriteexercise;
+  const bio = req.body.bio;
+  const facebook = req.body.facebook;
+  const instagram = req.body.instagram;
+  const twitter = req.body.twitter;
+  const snapchat = req.body.snapchat;
+  const spotify = req.body.spotify;
+
+
+  User.findOne({ username: username })
+    .then((currentUser) => {
+      if (currentUser) {
+        console.log('Current user information:', currentUser);
+
+        const updateData = {
+          displayemail: displayemail,
+          location: location,
+          fitnessgoal: fitnessgoal,
+          favoriteexercise: favoriteexercise,
+          bio: bio,
+          facebook: facebook,
+          instagram: instagram,
+          twitter: twitter,
+          snapchat: snapchat,
+          spotify: spotify
+        };
+        if (newname !== '') {
+          updateData.name = newname;
+        }
+
+        return User.findOneAndUpdate({ username: username }, updateData, { new: true });
+      } else {
+        throw new Error('User not found in the database');
+      }
+    })
+    .then((updatedUser) => {
+      console.log('Updated user information:', updatedUser);
+      res.redirect('/');
+    })
+    .catch((err) => {
+      console.error('Failed to edit profile:', err);
+      res.status(500).send('Failed to edit profile');
+    });
+});
 
 app.get('/', (req, res) => {
   // Access username from session
@@ -228,11 +290,19 @@ app.get('/Friends', (req, res) => {
 });
 
 app.get('/Profile', (req, res) => {
+  username = req.session.username;
   if(req.session.username == undefined){
     res.redirect('/login')
   }
   else{
-  res.render('Profile.ejs');
+    User.findOne({ username: req.session.username })
+    .then((user) => {
+      res.render('Profile.ejs', { user: user });
+    })
+    .catch((err) => {
+      console.error('Failed to find user:', err);
+      res.status(500).send('Failed to find user');
+    });
   }
 });
 
@@ -244,6 +314,23 @@ app.get('/SignUp', (req, res) => {
 app.get('/Login', (req, res) => {
   // Render home page with username
   res.render('Login.ejs');
+});
+
+app.get('/EditProfilePage', (req, res) => {
+  username = req.session.username;
+  if(req.session.username == undefined){
+    res.redirect('/login')
+  } else{
+      User.findOne({ username: req.session.username })
+      .then((user) => {
+        res.render('editprofile.ejs', { user: user });
+      })
+      .catch((err) => {
+        console.error('Failed to find user:', err);
+        res.status(500).send('Failed to find user');
+      });
+    }
+  
 });
 
 
