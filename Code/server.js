@@ -6,7 +6,6 @@ const session = require('express-session');
 const crypto = require('crypto');
 const path = require('path'); // Import path module
 const mongoose = require('mongoose'); // Import mongoose for MongoDB
-const uuid = require('uuid');
 
 // Initialise Express
 var app = express();
@@ -194,11 +193,19 @@ app.get('/', (req, res) => {
   });
 
 app.get('/Trending', (req, res) => {
+  const username = req.session.username;
   if(req.session.username == undefined){
     res.redirect('/login')
   }
   else{
-  res.render('Trending.ejs');
+    Post.find({})
+    .sort({likes: -1, _id: -1})
+    .then((posts) => {
+      res.render('trending.ejs', { username: username, posts: posts });
+    })
+    .catch((err) => {
+      console.error('Failed to retrieve users:', err);
+    });
   }
 });
 
