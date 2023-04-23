@@ -126,15 +126,20 @@ app.post('/createPost', (req, res) => {
   const description = req.body.description;
   const username = req.session.username;
 
+  // Check if exercise and description are not empty
+  if (!exercise || !description) {
+    return res.send(`<script>alert('Exercise and description are required'); window.history.back();</script>`);
+  }
+
   const newPost = new Post({ exercise, description, username });
 
   newPost.save()
           .then(() => {
-            res.send("success");
+            console.log("success");
           })
           .catch((err) => {
             console.error('Failed to save user:', err);
-            res.status(500).send('Failed to save user');
+            //res.status(500).send('Failed to save user');
           });
 
 
@@ -150,6 +155,7 @@ app.get('/', (req, res) => {
     }
   else{
     Post.find({})
+      .sort({_id: -1})
       .then((posts) => {
         res.render('index.ejs', { username: username, posts: posts });
       })
