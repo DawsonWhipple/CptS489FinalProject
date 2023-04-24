@@ -27,7 +27,6 @@
     <div id="IncludeNavBar"></div>
     <section style="background-color: #FFFFFF;">
       <form action="/editProfilePage" method="post">
-        <input type="submit" value="Edit Profile">
       </form>
         <div class="container py-5">      
           <div class="row">
@@ -154,7 +153,7 @@
                       <% for (challenge of challenges) { %>
                       <p class="mb-1" style="font-size: .77rem;"><%=challenge.challengename%></p>
                       <div class="progress rounded" style="height: 5px;">
-                        <div class="progress-bar" role="progressbar" style="width: <%=challenge.progress%>" aria-valuenow=80%>
+                        <div class="progress-bar" role="progressbar" style="width: <%=challenge.progress%>"  aria-valuenow="80%">
                           aria-valuemin="0" aria-valuemax="100"></div>
                       </div>
                       <% if(challenge.challengeComplete) { %>
@@ -170,6 +169,9 @@
           </div>
         </div>
       </section>
+      <br>
+        <input style="display: block; margin: 0 auto;" class="btn btn-primary" type="submit" value="Edit Profile">
+        <br>
     <div id="IncludeFooter"></div>
 </body>
 </html>
