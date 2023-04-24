@@ -21,6 +21,38 @@
         <!--Following link is used for CSS in index.css-->
         <link rel="stylesheet" type="text/css"href="Styles/index.css">
     <title>Login</title>
+    <style>
+        /* Add some basic styles for the login form */
+        form {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          margin-top: 50px;
+          font-family: Arial, sans-serif;
+        }
+        input[type="text"], input[type="password"] {
+          width: 300px;
+          padding: 10px;
+          margin-bottom: 20px;
+          border-radius: 5px;
+          border: 1px solid #ccc;
+        }
+        input[type="submit"] {
+          background-color: #4CAF50;
+          color: white;
+          padding: 10px 20px;
+          border: none;
+          border-radius: 5px;
+          cursor: pointer;
+        }
+        input[type="submit"]:hover {
+          background-color: #45a049;
+        }
+        a {
+          text-decoration: none;
+          color: #4CAF50;
+        }
+      </style>
     <script>
         $(document).ready(function () {
             // Add event listener to the form submit button
@@ -61,7 +93,7 @@
 </head>
 <body>
     <div id="IncludeNavBar"></div>
-    <h1>Login (Work in Progress)</h1>
+    <h1 style="text-align: center; ">Login</h1>
     <form>
         <!--Email or Username Input-->
         <div class="form-floating mb-3">
@@ -76,7 +108,11 @@
         </div>
         <button type="submit" class="btn btn-primary">Submit</button>
     </form>
-    <p>Need to create an account? <a href="SignUp.html">Sign-up</a></p>
+    <br>
+    <p style="text-align: center;">Don't have an account? <a href="/SignUp">Sign up here</a>.</p>
+    <br>
+    <br>
+    <br>
     <div id="IncludeFooter"></div>
 </body>
 </html>
