@@ -24,25 +24,28 @@
 </head>
 <body>
     <div id="IncludeNavBar"></div>
-      <div class="container mt-4 mb-5">
-        <div class="d-flex justify-content-center row">
-            <div class="col-md-8">
-                <div class="d-flex flex-row justify-content-between align-items-center p-2 border" style="background-color: #f0f0f0;">
-                    <div class="feed-text px-2">
-                        <h1 class="text-black-50 mt-2">Create Challenge</h1>
-                    </div>
-                </div>
-                <form action="/createChallenge" method="post">
-                    <label for="challengeName">Challenge: </label>
-                    <input type="text" id="challengename" name="challengename">
-                    <label for="description">Progress %: </label>
-                    <input type="text" id="progress" name="progress">
-                    <input type="submit" value="submit">
-                </form>
+    <div class="container mt-4 mb-5">
+      <div class="d-flex justify-content-center row">
+        <div class="col-md-8">
+          <div class="d-flex flex-row justify-content-between align-items-center p-2 border" style="background-color: #f0f0f0;">
+            <div class="feed-text px-2">
+              <h1 class="text-black-50 mt-2">Create Challange</h1>
             </div>
+          </div>
+          <form action="/createChallenge" method="post">
+            <div class="form-group">
+                <label for="challengeName">Challenge: </label>
+                <input type="text" class="form-control" id="challengename" name="challengename">
+            </div>
+            <div class="form-group">
+                <label for="description">Progress %: </label>
+                <input type="text" class="form-control" id="progress" name="progress">
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+          </form>
         </div>
+      </div>
     </div>
-    
     <div id="IncludeFooter"></div>
     <!--<div>Hello World!</div>-->
     <!--Following script is used for BootStrap implementation-->
