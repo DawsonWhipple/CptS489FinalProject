@@ -173,6 +173,30 @@ app.post('/createPost', (req, res) => {
   res.redirect('/');
 });
 
+app.post('/deletePost/:id', (req, res) => {
+  const postid = req.params.id;
+
+  Post.findById(postid)
+    .then((post) => {
+      if (!post) {
+        res.status(404).send('post not found');
+      } else {
+        Post.deleteOne({_id: postid})
+          .then(() => {
+            res.redirect('/Profile');
+          })
+          .catch((err) => {
+            console.error('Failed to delete post:', err);
+            res.status(500).send('Failed to delete post');
+          });
+      }
+    })
+    .catch((err) => {
+      console.error('Failed to find post:', err);
+      res.status(500).send('Failed to find post');
+    });
+});
+
 app.post('/updateProgress/:id', (req, res) => {
   const challengeid = req.params.id;
 
