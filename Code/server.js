@@ -378,6 +378,43 @@ app.post('/editProfile', (req, res) => {
 });
 
 
+app.get('/viewProfile/:username', (req, res) => {
+  const username = req.params.username;
+
+  if(req.session.username == undefined){
+    res.redirect('/login')
+  }
+  else{
+
+    User.findOne({ username: username })
+      .then((user) => {
+        if (!user) {
+          return res.status(404).send('User not found');
+        }
+
+        Post.find({ username: username })
+          .then((posts) => {
+            Challenge.find({ username: username })
+              .then((challenges) => {
+                res.render('UserProfile.ejs', { user: user, posts: posts, challenges: challenges, username:username });
+              })
+              .catch((err) => {
+                console.error('Failed to find challenges:', err);
+                res.status(500).send('Failed to find challenges');
+              });
+          })
+          .catch((err) => {
+            console.error('Failed to find posts:', err);
+            res.status(500).send('Failed to find posts');
+          });
+      })
+      .catch((err) => {
+        console.error('Failed to find user:', err);
+        res.status(500).send('Failed to find user');
+      });
+    }
+});
+
 app.get('/', (req, res) => {
   // Access username from session
   const username = req.session.username;
@@ -431,44 +468,41 @@ app.get('/Challenges', (req, res) => {
   }
 });
 
-app.get('/Friends', (req, res) => {
+app.get('/Profile', (req, res) => {
+  const username = req.session.username;
+
   if(req.session.username == undefined){
     res.redirect('/login')
   }
   else{
-  res.render('Friends.ejs');
-  }
-});
 
-app.get('/Profile', (req, res) => {
-  const username = req.session.username;
+    User.findOne({ username: username })
+      .then((user) => {
+        if (!user) {
+          return res.status(404).send('User not found');
+        }
 
-  User.findOne({ username: username })
-    .then((user) => {
-      if (!user) {
-        return res.status(404).send('User not found');
-      }
-
-      Post.find({ username: username })
-        .then((posts) => {
-          Challenge.find({ username: username })
-            .then((challenges) => {
-              res.render('Profile', { user: user, posts: posts, challenges: challenges, username:username });
-            })
-            .catch((err) => {
-              console.error('Failed to find challenges:', err);
-              res.status(500).send('Failed to find challenges');
-            });
-        })
-        .catch((err) => {
-          console.error('Failed to find posts:', err);
-          res.status(500).send('Failed to find posts');
-        });
-    })
-    .catch((err) => {
-      console.error('Failed to find user:', err);
-      res.status(500).send('Failed to find user');
-    });
+        Post.find({ username: username })
+          .then((posts) => {
+            Challenge.find({ username: username })
+              .then((challenges) => {
+                res.render('Profile', { user: user, posts: posts, challenges: challenges, username:username });
+              })
+              .catch((err) => {
+                console.error('Failed to find challenges:', err);
+                res.status(500).send('Failed to find challenges');
+              });
+          })
+          .catch((err) => {
+            console.error('Failed to find posts:', err);
+            res.status(500).send('Failed to find posts');
+          });
+      })
+      .catch((err) => {
+        console.error('Failed to find user:', err);
+        res.status(500).send('Failed to find user');
+      });
+    }
 });
 
 
