@@ -23,6 +23,38 @@
     <!--Following link is used for CSS in index.css-->
     <link rel="stylesheet" type="text/css" href="Styles/index.css">
     <title>Sign-Up Page</title>
+    <style>
+    /* Add some basic styles for the signup form */
+        form {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          margin-top: 50px;
+          font-family: Arial, sans-serif;
+        }
+        input[type="text"], input[type="password"] {
+          width: 300px;
+          padding: 10px;
+          margin-bottom: 20px;
+          border-radius: 5px;
+          border: 1px solid #ccc;
+        }
+        input[type="submit"] {
+          background-color: #4CAF50;
+          color: white;
+          padding: 10px 20px;
+          border: none;
+          border-radius: 5px;
+          cursor: pointer;
+        }
+        input[type="submit"]:hover {
+          background-color: #45a049;
+        }
+        a {
+          text-decoration: none;
+          color: #4CAF50;
+        }
+      </style>
     <script>
         $(document).ready(function () {
             // Add event listener to the form submit button
@@ -79,7 +111,8 @@
 
 <body>
     <div id="IncludeNavBar"></div>
-    <h1>Register</h1>
+    <br>
+    <h1 style="text-align: center;">Register</h1>
     <form>
         <!--Name Input-->
         <div class="form-floating mb-3">
@@ -96,7 +129,7 @@
 
         <!--Email Input-->
         <div class="form-floating mb-3">
-            <input type="email" class="form-control" id="registerEmail" name="registerEmail"
+            <input type="text" class="form-control" id="registerEmail" name="registerEmail"
                 placeholder="Enter a valid email">
             <label for="floatingInput">Email</label>
         </div>
@@ -119,10 +152,11 @@
             <input type="checkbox" class="form-check-input" id="termsCheck">
             <label class="form-check-label" for="termsCheck">I agree to the</label>
             <a href="">terms and conditions</a>
+            <br>
         </div>
         <button type="submit" class="btn btn-primary">Submit</button>
     </form>
-    <p>Already have an account? <a href="/Login">Sign-in</a></p>
+    <p style="text-align: center;">Already have an account? <a href="/Login">Sign-in</a></p>
     <div id="IncludeFooter"></div>
 </body>
 
